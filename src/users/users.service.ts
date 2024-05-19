@@ -8,7 +8,7 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto) {
     console.log(createUserDto);
-    const createdUser = await this.prisma.user.create({data:new CreateUserDto})
+    const createdUser = await this.prisma.user.create({data: createUserDto})
     return createdUser
   }
 

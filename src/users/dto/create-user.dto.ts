@@ -40,7 +40,7 @@ export class CreateUserDto {
   })
   @IsString()
   @IsNotEmpty()
-  hashRt?: string;
+  hashedRt?: string;
 
   
 }
