@@ -19,6 +19,10 @@ model User {
   username  String   @unique // Unique constraint on the username field
   email     String   @unique // Unique constraint on the email field
   password  String   // Field to store the user's password
+  hash      String
+  hashedRt  String?
   createdAt DateTime @default(now()) // Timestamp for when the user was created
   updatedAt DateTime @updatedAt // Timestamp for when the user was last updated
+
+  @@map("users")
 }
