@@ -8,12 +8,14 @@ export class RefreshTokenStrategy extends PassportStrategy(Strategy, 'jwt'){
     constructor() {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-            secretOfKey: 'rt-secret',
+            secretOrKey: 'rt-secret',
             passReqToCallback:true
         })
     }
     validate(req:Request,payload:any){
-        return payload 
+        const refreshToken = req.get('authorization').replace('Bearer','').trim();
+        
+        return {...payload, refreshToken} 
         
      }
 }
