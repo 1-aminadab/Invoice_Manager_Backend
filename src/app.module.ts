@@ -7,7 +7,7 @@ import { AuthModule } from './auth/auth.module';
 
 
 @Module({
-  imports: [UsersModule, AuthModule],
+  imports: [UsersModule, AuthModule, PrismaModule],
   controllers: [AppController],
   providers: [AppService],
 })

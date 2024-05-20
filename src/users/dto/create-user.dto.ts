@@ -6,9 +6,7 @@ export class CreateUserDto {
     example: 'john_doe',
     description: 'The username of the user',
   })
-  @IsString()
-  @IsNotEmpty()
-  username: string;
+  username?: string;
 
   @ApiProperty({
     example: 'john@example.com',
@@ -30,16 +28,12 @@ export class CreateUserDto {
     example: 'hash',
     description: 'The hash',
   })
-  @IsString()
-  @IsNotEmpty()
-  hash: string;
+  hash?: string;
 
   @ApiProperty({
     example: 'hashRt',
     description: 'The hashRt',
   })
-  @IsString()
-  @IsNotEmpty()
   hashedRt?: string;
 
   
