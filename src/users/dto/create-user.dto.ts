@@ -1,20 +1,31 @@
+/* eslint-disable prettier/prettier */
 import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { IsString, IsEmail, IsNotEmpty } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateUserDto {
   @ApiProperty({
-    example: 'john_doe',
-    description: 'The username of the user',
+    example: 'John',
+    description: 'The first name of the user',
   })
-  username?: string;
+  @IsString()
+  @IsNotEmpty()
+  readonly first_name: string;
+
+  @ApiProperty({
+    example: 'Doe',
+    description: 'The last name of the user',
+  })
+  @IsString()
+  @IsNotEmpty()
+  readonly last_name: string;
 
   @ApiProperty({
     example: 'john@example.com',
-    description: 'The email of the user',
+    description: 'The email address of the user',
   })
   @IsEmail()
   @IsNotEmpty()
-  email: string;
+  readonly email: string;
 
   @ApiProperty({
     example: 'password123',
@@ -22,22 +33,47 @@ export class CreateUserDto {
   })
   @IsString()
   @IsNotEmpty()
-  password: string;
+  readonly password: string;
 
   @ApiProperty({
     example: 'hash',
-    description: 'The hash',
+    description: 'The hashed refresh token',
   })
-  hash?: string;
+  @IsOptional()
+  @IsString()
+  readonly hashedRt?: string;
 
   @ApiProperty({
-    example: 'hashRt',
-    description: 'The hashRt',
+    example: '+123456789',
+    description: 'The phone number of the user',
   })
-  hashedRt?: string;
+  @IsOptional()
+  @IsString()
+  readonly phone?: string;
 
-  
+  @ApiProperty({
+    example: '123 Street',
+    description: 'The address of the user',
+  })
+  @IsOptional()
+  @IsString()
+  readonly address?: string;
+
+  @ApiProperty({
+    example: 'City',
+    description: 'The city of the user',
+  })
+  @IsOptional()
+  @IsString()
+  readonly city?: string;
+
+  @ApiProperty({
+    example: 'Country',
+    description: 'The country of the user',
+  })
+  @IsOptional()
+  @IsString()
+  readonly country?: string;
 }
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {}
-

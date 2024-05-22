@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { NestFactory } from '@nestjs/core';
 
 import { AppModule } from './app.module';
@@ -25,7 +26,11 @@ async function bootstrap() {
 
   SwaggerModule.setup('api-docs', app, document);
 
-
+  app.enableCors({
+    origin: true,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,
+});
   await app.listen(5000);
 
 }

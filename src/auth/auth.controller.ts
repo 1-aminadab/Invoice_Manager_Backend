@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Body, Controller, HttpCode, HttpStatus, InternalServerErrorException, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto/auth.dto';
@@ -5,6 +6,7 @@ import { Tokens } from './types';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
+import { CreateUserDto } from 'src/users/dto/create-user.dto';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -14,7 +16,7 @@ export class AuthController {
 
     @Post('/local/signup')
     @HttpCode(HttpStatus.OK)
-    async signupLocal(@Body() dto: AuthDto):Promise<Tokens>{
+    async signupLocal(@Body() dto: CreateUserDto):Promise<Tokens>{
         try {
             return await this.authService.signupLocal(dto)
   

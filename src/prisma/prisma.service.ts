@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 @Injectable()
@@ -6,7 +7,7 @@ export class PrismaService extends PrismaClient implements OnModuleDestroy, OnMo
         super({
             datasources: {
                 db: {
-                    url:"postgresql://postgres:12345678@localhost:5432/mydb?schema=public"
+                    url:"postgresql://invoice_postgres_owner:s2R4JcZoAeVi@ep-soft-truth-a51x9l4c.us-east-2.aws.neon.tech/invoice_postgres?sslmode=require"
                 }
             }
         })

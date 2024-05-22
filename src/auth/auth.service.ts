@@ -1,130 +1,109 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+/* eslint-disable prettier/prettier */
+import { BadRequestException, ForbiddenException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthDto } from './dto/auth.dto';
 import * as bcrypt from 'bcrypt'
 import { JwtService } from '@nestjs/jwt';
 import { Tokens } from './types';
+import { CreateUserDto } from 'src/users/dto/create-user.dto';
 
 @Injectable()
 export class AuthService {
     constructor(
         private prisma: PrismaService,
         private jwtService: JwtService
-    ) {
+    ) {}
 
-    }
     hashData(data: string) {
         return bcrypt.hash(data, 10)
     }
+
     async getToken(userId: number, email: string) {
         const payload = { sub: userId, email }
         const [accessToken, refreshToken] = await Promise.all([
-            this.jwtService.signAsync(
-                payload,
-                {
-                    expiresIn: 60 * 15,
-                    secret: "at-secret"
-                }
-
-            ),
-            this.jwtService.signAsync(
-                payload,
-                {
-                    expiresIn: 60 * 60 * 24 * 7,
-                    secret: "rt-secret"
-                }
-
-            )
+            this.jwtService.signAsync(payload, { expiresIn: 60 * 15, secret: "at-secret" }),
+            this.jwtService.signAsync(payload, { expiresIn: 60 * 60 * 24 * 7, secret: "rt-secret" })
         ])
 
         return {
             access_token: accessToken,
             refresh_token: refreshToken
         }
-
     }
 
-    async signupLocal(dto: AuthDto): Promise<Tokens> {
-        console.log(dto);
+    async signupLocal(dto: CreateUserDto): Promise<Tokens> {
         try {
+            const existingUser = await this.prisma.user.findUnique({ where: { email: dto.email } });
+            if (existingUser) {
+                throw new BadRequestException('Email already exists.');
+            }
+            
             const hash = await this.hashData(dto.password)
-            const newUser = await this.prisma.user.create({
-                data: {
-                    email: dto.email,
-                    hash
-                }
-            })
-            console.log("new user", newUser);
-
-            const tokens = await this.getToken(newUser.id, newUser.email)
-            console.log(tokens);
-            await this.updateRefreshTokenHash(newUser.id, tokens.refresh_token)
-            return tokens
+            const newUser = await this.prisma.user.create({ data: { ...dto, password: hash } });
+            const tokens = await this.getToken(newUser.user_id, newUser.email);
+            await this.updateRefreshTokenHash(newUser.user_id, tokens.refresh_token);
+            return tokens;
         } catch (error) {
-            console.log(error);
+            throw new BadRequestException('Signup failed.', error.message);
         }
-
-
     }
 
     async singinLocal(dto: AuthDto): Promise<Tokens> {
-        const user = await this.prisma.user.findUnique({
-            where: {
-                email: dto.email,
+        console.log('====================================');
+        console.log(dto);
+        console.log('====================================');
+        try {
+            const user = await this.prisma.user.findUnique({ where: { email: dto.email } });
+            if (!user) {
+                throw new ForbiddenException('Access Denied');
             }
-        })
-        if (!user) throw new ForbiddenException("Access Denied")
-        const passwordMatches = await bcrypt.compare(dto.password, user.hash)
-        if (!passwordMatches) throw new ForbiddenException("Password dont match")
-        const tokens = await this.getToken(user.id, user.email)
-        await this.updateRefreshTokenHash(user.id, tokens.refresh_token)
-        return tokens
+            
+            const passwordMatches = await bcrypt.compare(dto.password, user.password);
+            if (!passwordMatches) {
+                throw new ForbiddenException('Password does not match');
+            }
+            
+            const tokens = await this.getToken(user.user_id, user.email);
+            await this.updateRefreshTokenHash(user.user_id, tokens.refresh_token);
+            return tokens;
+        } catch (error) {
+            throw new ForbiddenException('Signin failed.', error.message);
+        }
     }
+
     async logout(userId: number) {
         const updatedUser = await this.prisma.user.updateMany({
             where: {
-                id: userId,
-                hashedRt: {
-                    not: null
-                }
+                user_id: userId,
+                hashedRt: { not: null }
             },
-            data: {
-                hashedRt: null
-            }
-        })
-        return updatedUser
+            data: { hashedRt: null }
+        });
+        return { message: 'Logged out successfully.', success: true };
     }
-    async refreshTokens(userId: number, refreshToken: string) {
-        const user = await this.prisma.user.findUnique({
-            where: {
-                id: userId
-            }
-        })
-        
-        if (!user) throw new ForbiddenException("Access denied")
-            
-        const hash = await this.hashData(refreshToken)
-        console.log("refresh token ",refreshToken);
-        console.log("refresh token hash", hash);
-        console.log("token from user", user.hashedRt)
-        
-        const isuserMatch = await bcrypt.compare(hash, user.hashedRt)
-        console.log(isuserMatch);
-        
-        if (!isuserMatch) throw new ForbiddenException("Access denied")
 
-        const tokens = await this.getToken(user.id, user.email)
-    console.log(tokens);
-    
-        await this.updateRefreshTokenHash(user.id, tokens.refresh_token)
+    async refreshTokens(userId: number, refreshToken: string) {
+        try {
+            const user = await this.prisma.user.findUnique({ where: { user_id: userId } });
+            if (!user) {
+                throw new ForbiddenException('Access denied');
+            }
+            
+            const hash = await this.hashData(refreshToken);
+            if (hash !== user.hashedRt) {
+                throw new ForbiddenException('Access denied');
+            }
+            
+            const tokens = await this.getToken(user.user_id, user.email);
+            await this.updateRefreshTokenHash(user.user_id, tokens.refresh_token);
+            return tokens;
+        } catch (error) {
+            throw new ForbiddenException('Token refresh failed.', error.message);
+        }
     }
+
     async updateRefreshTokenHash(userId: number, refreshToken: string) {
         const hash = await this.hashData(refreshToken)
-        await this.prisma.user.update({
-            where: { id: userId },
-            data: { hashedRt: hash }
-        })
+        await this.prisma.user.update({ where: { user_id: userId }, data: { hashedRt: hash } });
     }
-
-
 }
