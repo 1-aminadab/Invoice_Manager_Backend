@@ -1,7 +1,8 @@
+/* eslint-disable prettier/prettier */
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateTaxDto } from './dto/create-tax.dto';
-import { UpdateTaxDto } from './dto/update-tax.dto';
+import { CreateTaxDto } from './tax.dto';
+import { UpdateTaxDto } from './tax.dto';
 
 @Injectable()
 export class TaxService {

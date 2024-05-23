@@ -1,7 +1,8 @@
+/* eslint-disable prettier/prettier */
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateDiscountDto } from './dto/create-discount.dto';
-import { UpdateDiscountDto } from './dto/update-discount.dto';
+import { CreateDiscountDto } from './discount.dto';
+import { UpdateDiscountDto } from './discount.dto';
 
 @Injectable()
 export class DiscountService {

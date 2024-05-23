@@ -72,7 +72,7 @@ export class AuthService {
     }
 
     async logout(userId: number) {
-        const updatedUser = await this.prisma.user.updateMany({
+        await this.prisma.user.updateMany({
             where: {
                 user_id: userId,
                 hashedRt: { not: null }

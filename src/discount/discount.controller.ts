@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
     Controller,
     Get,
@@ -11,8 +12,8 @@ import {
   } from '@nestjs/common';
   import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
   import { DiscountService } from './discount.service';
-  import { CreateDiscountDto } from './dto/create-discount.dto';
-  import { UpdateDiscountDto } from './dto/update-discount.dto';
+  import { CreateDiscountDto } from './discount.dto';
+  import { UpdateDiscountDto } from './discount.dto';
   
   @ApiTags('discounts')
   @Controller('discounts')

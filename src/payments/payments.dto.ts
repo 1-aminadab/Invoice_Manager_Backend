@@ -1,11 +1,15 @@
-class CreatePaymentDto {
+/* eslint-disable prettier/prettier */
+
+import { ApiProperty } from '@nestjs/swagger';
+import { IsDate, IsDecimal,  IsNotEmpty, IsString} from 'class-validator';
+
+export class CreatePaymentDto {
     @ApiProperty({ example: '2023-05-22' })
-    @IsDate()
     @IsNotEmpty()
     payment_date: Date;
   
     @ApiProperty({ example: 100.00 })
-    @IsDecimal()
+
     @IsNotEmpty()
     payment_amount: number;
   

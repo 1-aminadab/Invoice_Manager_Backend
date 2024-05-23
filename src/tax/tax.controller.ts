@@ -12,8 +12,8 @@ import {
   } from '@nestjs/common';
   import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
   import { TaxService } from './tax.service';
-  import { CreateTaxDto } from './dto/create-tax.dto';
-  import { UpdateTaxDto } from './dto/update-tax.dto';
+  import { CreateTaxDto } from './tax.dto';
+  import { UpdateTaxDto } from './tax.dto';
   
   @ApiTags('taxes')
   @Controller('taxes')

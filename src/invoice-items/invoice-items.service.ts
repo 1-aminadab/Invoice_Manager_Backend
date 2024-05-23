@@ -1,12 +1,12 @@
+/* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateInvoiceItemDto } from './dto/create-invoice-item.dto';
 
 @Injectable()
 export class InvoiceItemsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(createInvoiceItemDto: CreateInvoiceItemDto) {
+  async create(createInvoiceItemDto: any) {
     return this.prisma.invoiceItem.create({
       data: createInvoiceItemDto,
     });

@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
     Controller,
     Get,
@@ -11,7 +12,7 @@ import {
   } from '@nestjs/common';
   import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
   import { ProductsService } from './products.service';
-  import { CreateProductDto, UpdateProductDto } from './dto/create-update-product.dto';
+  import { CreateProductDto, UpdateProductDto } from './products.dto';
   
   @ApiTags('products')
   @Controller('products')

@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Module } from '@nestjs/common';
 import { InvoiceItemsService } from './invoice-items.service';
 import { InvoiceItemsController } from './invoice-items.controller';

@@ -1,7 +1,8 @@
+/* eslint-disable prettier/prettier */
 import { Controller, Get, Post, Body, Param, Delete, HttpCode, HttpStatus } from '@nestjs/common';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { InvoiceItemsService } from './invoice-items.service';
-import { CreateInvoiceItemDto } from './dto/create-invoice-item.dto';
+import { CreateInvoiceItemDto } from './invoice-items.dto';
 
 @ApiTags('invoice-items')
 @Controller('invoice-items')

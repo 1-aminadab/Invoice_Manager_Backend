@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,15 +11,94 @@ datasource db {
 }
 
 model User {
-  user_id Int @id @default(autoincrement())
+  user_id   Int     @id @default(autoincrement())
   first_name String
-  last_name String
-  email String  @unique
-  password String
-  hashedRt String?
-  phone String?
-  address String?
-  city String?
-  country String?
+  last_name  String
+  email      String  @unique
+  password   String
+  hashedRt   String?
+  phone      String?
+  address    String?
+  city       String?
+  country    String?
+
+  // Relations
+  fromInvoices Invoice[] @relation("fromUser")
+  toInvoices   Invoice[] @relation("toUser")
 }
 
+model Product {
+  product_id   Int       @id @default(autoincrement())
+  product_name String
+  description  String?
+  price        Decimal   @db.Decimal(10, 2)
+  tax_id       Int?
+  discount_id  Int?
+
+  // Relations
+  tax          Tax?      @relation(fields: [tax_id], references: [tax_id], onDelete: Cascade)
+  discount     Discount? @relation(fields: [discount_id], references: [discount_id], onDelete: Cascade)
+  invoiceItems InvoiceItem[]
+}
+
+model Tax {
+  tax_id    Int       @id @default(autoincrement())
+  tax_name  String
+  tax_rate  Decimal   @db.Decimal(5, 2)
+
+  // Relations
+  products  Product[]
+}
+
+model Discount {
+  discount_id    Int       @id @default(autoincrement())
+  discount_type  String
+  discount_value Decimal   @db.Decimal(10, 2)
+
+  // Relations
+  products       Product[]
+}
+
+model Invoice {
+  invoice_id      Int          @id @default(autoincrement())
+  invoice_number  String       @unique
+  from_customer_id Int
+  to_customer_id   Int
+  date_issued     DateTime
+  due_date        DateTime
+  status          String
+  total_amount    Decimal      @db.Decimal(10, 2)
+  tax_amount      Decimal      @db.Decimal(10, 2)
+  subtotal        Decimal      @db.Decimal(10, 2)
+
+  // Relations
+  fromUser        User         @relation("fromUser", fields: [from_customer_id], references: [user_id], onDelete: Cascade)
+  toUser          User         @relation("toUser", fields: [to_customer_id], references: [user_id], onDelete: Cascade)
+  invoiceItems    InvoiceItem[]
+  payments        Payment[]
+}
+
+model InvoiceItem {
+  invoice_item_id Int      @id @default(autoincrement())
+  invoice_id      Int
+  product_id      Int
+  quantity        Int
+  unit_price      Decimal  @db.Decimal(10, 2)
+  total_price     Decimal  @db.Decimal(10, 2)
+
+  // Relations
+  invoice         Invoice  @relation(fields: [invoice_id], references: [invoice_id], onDelete: Cascade)
+  product         Product  @relation(fields: [product_id], references: [product_id], onDelete: Cascade)
+}
+
+model Payment {
+  payment_id      Int      @id @default(autoincrement())
+  invoice_id      Int
+  payment_date    DateTime
+  payment_amount  Decimal  @db.Decimal(10, 2)
+  payment_method  String
+  payment_status  String
+
+  // Relations
+  invoice         Invoice  @relation(fields: [invoice_id], references: [invoice_id], onDelete: Cascade)
+}
