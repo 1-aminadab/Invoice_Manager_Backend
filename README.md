@@ -57,17 +57,129 @@ $ npm run test:e2e
 # test coverage
 $ npm run test:cov
 ```
+# Invoice Manager Backend
 
-## Support
+## Overview
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+The backend of the "Invoice Manager" application is built using NestJS, providing a robust and scalable API for managing invoices. This application supports CRUD operations for invoices, user authentication, and export functionalities.
 
-## Stay in touch
+## Technology Stack
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+- **Backend Framework:** NestJS
+- **Database:** PostgreSQL
+- **ORM:** Prisma
+- **Authentication:** JWT with Passport
+- **Deployment:** Neon (PostgreSQL hosting) and Render
 
-## License
+## Prerequisites
 
-Nest is [MIT licensed](LICENSE).
+- Node.js
+- npm or yarn
+- PostgreSQL
+
+## Setup Instructions
+
+### 1. Clone the Repository
+
+```bash
+git clone <repository_url>
+cd invoice-manager/backend
+2. Install Dependencies
+bash
+Copy code
+npm install
+or
+
+bash
+Copy code
+yarn install
+3. Set Up Environment Variables
+Create a .env file in the root directory and add the following variables:
+
+env
+Copy code
+DATABASE_URL=postgresql://<username>:<password>@<host>:<port>/<database>
+JWT_SECRET=<your_jwt_secret>
+Adjust the database URL according to your PostgreSQL configuration.
+
+4. Run Prisma Migrations
+bash
+Copy code
+npx prisma migrate dev
+5. Start the Backend Server
+bash
+Copy code
+npm run start:dev
+or
+
+bash
+Copy code
+yarn start:dev
+The backend server should now be running on http://localhost:3000.
+
+Project Structure
+plaintext
+Copy code
+src/
+├── auth/               # Authentication module
+├── common/             # Common utilities and constants
+├── invoice/            # Invoice module
+├── prisma/             # Prisma service
+├── user/               # User module
+├── main.ts             # Entry point
+├── app.module.ts       # Root module
+└── ...                 # Other configurations and modules
+Key Features
+Invoice Management
+Create Invoice: Add a new invoice with details such as client information, itemized list of products/services, total amount, and due date.
+View Invoices: Retrieve a list of all invoices with basic details.
+Update Invoice: Edit the details of an existing invoice.
+Delete Invoice: Remove an invoice from the system.
+Export Functionality
+PDF Export: Export individual invoices as PDF documents.
+Excel Export: Export all invoices or selected invoices as an Excel file.
+Authentication
+Sign Up: Create a new user account.
+Sign In: Log in with existing user credentials.
+Token Management: Securely handle authentication tokens with JWT.
+
+Running Tests
+You can run tests using the following command:
+
+bash
+Copy code
+npm run start:dev
+or
+
+bash
+Copy code
+yarn test
+Deployment
+Render
+The backend is configured to be easily deployed on Render. Follow these steps to deploy:
+
+Sign Up / Log In to your Render account.
+
+Create a New Web Service:
+
+Go to the Render dashboard.
+Click on the "New" button and select "Web Service".
+Connect your repository from GitHub.
+Configure the Service:
+
+Set the Build Command to:
+bash
+Copy code
+npm install && npx prisma migrate deploy && npm run build
+Set the Start Command to:
+bash
+Copy code
+npm run start:prod
+Set the Environment Variables as needed (e.g., DATABASE_URL, JWT_SECRET).
+Deploy:
+
+Click on "Create Web Service" to start the deployment process.
+Render will automatically build and deploy your application. You can monitor the deployment process and logs through the Render dashboard.
+
+Conclusion
+This README provides the necessary information to set up and run the backend for the "Invoice Manager" application. The backend is designed to be scalable, secure, and easily extendable. If you encounter any issues or have any questions, please refer to the documentation or open an issue in the repository.
