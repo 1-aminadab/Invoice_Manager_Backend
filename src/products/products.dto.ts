@@ -14,7 +14,7 @@ export class CreateProductDto {
   description?: string;
 
   @ApiProperty({ example: 999.99, description: 'Price of the product' })
-  @IsDecimal()
+  
   @IsNotEmpty()
   price: number;
 

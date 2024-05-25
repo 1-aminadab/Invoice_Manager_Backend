@@ -9,7 +9,6 @@ export class CreateTaxDto {
   tax_name: string;
 
   @ApiProperty({ example: 0.18, description: 'Rate of the tax' })
-  @IsDecimal()
   @IsNotEmpty()
   tax_rate: number;
 

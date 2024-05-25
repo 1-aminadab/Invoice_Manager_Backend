@@ -31,15 +31,24 @@ export class AuthService {
         }
     }
 
-    async signupLocal(dto: CreateUserDto): Promise<Tokens> {
+    async signupLocal(dto: any): Promise<Tokens> {
+        console.log('====================================');
+        console.log("here we go");
+        console.log('====================================');
         try {
             const existingUser = await this.prisma.user.findUnique({ where: { email: dto.email } });
+            console.log('====================================');
+            console.log("is the problem here ");
+            console.log('====================================');
             if (existingUser) {
                 throw new BadRequestException('Email already exists.');
             }
             
             const hash = await this.hashData(dto.password)
-            const newUser = await this.prisma.user.create({ data: { ...dto, password: hash } });
+            const newUser = await this.prisma.user.create({ data: {...dto, password:hash} });
+            console.log('====================================');
+            console.log("or here", newUser);
+            console.log('====================================');
             const tokens = await this.getToken(newUser.user_id, newUser.email);
             await this.updateRefreshTokenHash(newUser.user_id, tokens.refresh_token);
             return tokens;

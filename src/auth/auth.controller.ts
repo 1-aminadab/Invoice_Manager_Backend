@@ -3,7 +3,7 @@ import { Body, Controller, HttpCode, HttpStatus, InternalServerErrorException, P
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto/auth.dto';
 import { Tokens } from './types';
-import {  ApiTags } from '@nestjs/swagger';
+import {  ApiBody, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
@@ -16,6 +16,7 @@ export class AuthController {
 
     @Post('/local/signup')
     @HttpCode(HttpStatus.OK)
+    @ApiBody({ type: CreateUserDto })
     async signupLocal(@Body() dto: CreateUserDto):Promise<Tokens>{
         try {
             return await this.authService.signupLocal(dto)

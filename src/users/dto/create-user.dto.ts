@@ -49,7 +49,7 @@ export class CreateUserDto {
   })
   @IsOptional()
   @IsString()
-  readonly phone?: string;
+  readonly phoneNumber?: string;
 
   @ApiProperty({
     example: '123 Street',

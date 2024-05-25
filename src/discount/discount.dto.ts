@@ -9,7 +9,6 @@ export class CreateDiscountDto {
   discount_type: string;
 
   @ApiProperty({ example: 0.15, description: 'Value of the discount' })
-  @IsDecimal()
   @IsNotEmpty()
   discount_value: number;
 
