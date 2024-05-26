@@ -3,6 +3,10 @@ import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { IsDecimal, IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateProductDto {
+  @ApiProperty({ example: 1, description: 'Name of the tax' })
+  @IsNotEmpty()
+  product_added_by: number;
+
   @ApiProperty({ example: 'Laptop', description: 'Name of the product' })
   @IsString()
   @IsNotEmpty()

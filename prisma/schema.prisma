@@ -25,10 +25,15 @@ model User {
   // Relations
   fromInvoices Invoice[] @relation("fromUser")
   toInvoices   Invoice[] @relation("toUser")
+  product_added_by     Product[] @relation("addedBy")
+  tax_added_by     Tax[] @relation("addedBy")
+  discount_added_by     Discount[] @relation("addedBy")
+
 }
 
 model Product {
   product_id   Int       @id @default(autoincrement())
+  product_added_by Int
   product_name String
   description  String?
   price        Decimal   @db.Decimal(10, 2)
@@ -38,25 +43,32 @@ model Product {
   // Relations
   tax          Tax?      @relation(fields: [tax_id], references: [tax_id], onDelete: Cascade)
   discount     Discount? @relation(fields: [discount_id], references: [discount_id], onDelete: Cascade)
+  user         User?     @relation("addedBy",fields: [product_added_by], references: [user_id],onDelete: Cascade)
   invoiceItems InvoiceItem[]
 }
 
 model Tax {
   tax_id    Int       @id @default(autoincrement())
+  tax_added_by Int
   tax_name  String
   tax_rate  Decimal   @db.Decimal(5, 2)
 
   // Relations
   products  Product[]
+  user         User?     @relation("addedBy",fields: [tax_added_by], references: [user_id],onDelete: Cascade)
+
 }
 
 model Discount {
   discount_id    Int       @id @default(autoincrement())
+  discount_added_by Int
   discount_type  String
   discount_value Decimal   @db.Decimal(10, 2)
 
   // Relations
   products       Product[]
+  user         User?     @relation("addedBy",fields: [discount_added_by], references: [user_id],onDelete: Cascade)
+
 }
 
 model Invoice {

@@ -3,6 +3,10 @@ import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { IsDecimal, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateTaxDto {
+  @ApiProperty({ example: 1, description: 'Name of the tax' })
+  @IsNotEmpty()
+  tax_added_by: number;
+
   @ApiProperty({ example: 'VAT', description: 'Name of the tax' })
   @IsString()
   @IsNotEmpty()
