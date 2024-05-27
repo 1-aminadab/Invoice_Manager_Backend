@@ -44,9 +44,10 @@ export class AuthController {
     @HttpCode(HttpStatus.OK)
     @Post('/refresh')
     async refreshTokens(@Req() req:Request){
-        const user = req.user
+        const user = req.user        
+        console.log('====================================');
         console.log(user);
-        
+        console.log('====================================');
         return await this.authService.refreshTokens(user['sub'], user['refreshToken'])
 
     }

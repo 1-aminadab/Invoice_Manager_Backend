@@ -5,7 +5,6 @@ import { AuthDto } from './dto/auth.dto';
 import * as bcrypt from 'bcrypt'
 import { JwtService } from '@nestjs/jwt';
 import { Tokens } from './types';
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -31,7 +30,7 @@ export class AuthService {
         }
     }
 
-    async signupLocal(dto: any): Promise<Tokens> {
+    async signupLocal(dto: any): Promise<any> {
         console.log('====================================');
         console.log("here we go");
         console.log('====================================');
@@ -51,13 +50,13 @@ export class AuthService {
             console.log('====================================');
             const tokens = await this.getToken(newUser.user_id, newUser.email);
             await this.updateRefreshTokenHash(newUser.user_id, tokens.refresh_token);
-            return tokens;
+            return {success:true, status:200, data:{access_token:tokens.access_token, refresh_token:tokens.refresh_token, user:newUser}};
         } catch (error) {
             throw new BadRequestException('Signup failed.', error.message);
         }
     }
 
-    async singinLocal(dto: AuthDto): Promise<Tokens> {
+    async singinLocal(dto: AuthDto): Promise<any> {
         console.log('====================================');
         console.log(dto);
         console.log('====================================');
@@ -74,7 +73,10 @@ export class AuthService {
             
             const tokens = await this.getToken(user.user_id, user.email);
             await this.updateRefreshTokenHash(user.user_id, tokens.refresh_token);
-            return tokens;
+            console.log('====================================');
+            console.log(tokens);
+            console.log('====================================');
+            return {success:true, status:200, data:{access_token:tokens.access_token, refresh_token:tokens.refresh_token, user:user}};
         } catch (error) {
             throw new ForbiddenException('Signin failed.', error.message);
         }
@@ -94,19 +96,30 @@ export class AuthService {
     async refreshTokens(userId: number, refreshToken: string) {
         try {
             const user = await this.prisma.user.findUnique({ where: { user_id: userId } });
+            console.log('====================================');
+            console.log(user);
+            console.log('====================================');
             if (!user) {
                 throw new ForbiddenException('Access denied');
             }
             
-            const hash = await this.hashData(refreshToken);
-            if (hash !== user.hashedRt) {
+            const legalUser = await bcrypt.compare(refreshToken,user.hashedRt)
+            console.log('====================================');
+            console.log(legalUser);
+            console.log('====================================');
+            if (legalUser ) {
                 throw new ForbiddenException('Access denied');
             }
-            
+           
             const tokens = await this.getToken(user.user_id, user.email);
+            console.log('====================================');
+            console.log(tokens);
+            console.log('====================================');
             await this.updateRefreshTokenHash(user.user_id, tokens.refresh_token);
+          
             return tokens;
         } catch (error) {
+          
             throw new ForbiddenException('Token refresh failed.', error.message);
         }
     }
