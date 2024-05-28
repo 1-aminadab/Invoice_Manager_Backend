@@ -21,7 +21,11 @@ export class InvoiceItemsService {
       where: { invoice_item_id: id },
     });
   }
-
+  async findByInvoiceId(id: number) {
+    return this.prisma.invoiceItem.findMany({
+      where: { invoice_id:id }
+    });
+  }
   async remove(id: number) {
     return this.prisma.invoiceItem.delete({
       where: { invoice_item_id: id },

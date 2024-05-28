@@ -21,6 +21,11 @@ export class PaymentsService {
       where: { payment_id: id },
     });
   }
+  async findByInvoiceId(id: number) {
+    return this.prisma.payment.findMany({
+      where: { invoice_id:id }
+    });
+  }
 
   async remove(id: number) {
     return this.prisma.payment.delete({
